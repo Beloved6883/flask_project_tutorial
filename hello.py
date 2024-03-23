@@ -4,6 +4,7 @@ from wtforms import StringField, SubmitField
 from wtforms.validators import DataRequired
 from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime
+import os
 
 
 # Create a Flask instance
@@ -11,7 +12,11 @@ from datetime import datetime
 app = Flask(__name__)
 
 # Add User Database (SQLite)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///users.db'
+# app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///users.db'
+
+# New MySQL DB
+db_password = os.getenv('MYSQL_PASSWORD')
+app.config['SQLALCHEMY_DATABASE_URI'] = f'mysql+pymysql://root:{db_password}@localhost/users'
 
 # Create CRSF token
 app.config['SECRET_KEY'] = "my super secret key"
