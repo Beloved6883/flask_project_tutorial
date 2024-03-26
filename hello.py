@@ -6,6 +6,7 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 from datetime import datetime
 import os
+from werkzeug.security import generate_password_hash, check_password_hash
 
 
 # Create a Flask instance
@@ -35,6 +36,20 @@ class Users(db.Model):
    email = db.Column(db.String(120), nullable=False, unique=True)
    date_added = db.Column(db.DateTime, default=datetime.now)
    favorite_color = db.Column(db.String(120))
+
+   # Do some password stuff
+   password_hash = db.Column(db.String(128))
+
+   @property
+   def password(self):
+      raise AttributeError('password is not a readable attribute')
+
+   @password.setter
+   def password(self,password):
+      self.password_hash = generate_password_hash(password)
+   
+   def verify_password(self,password):
+      return check_password_hash(self.password_hash, password)
 
    # Create a String
    def __repr__(self):
@@ -99,7 +114,6 @@ def update(id):
                                 name_to_update=name_to_update,
                                 id=id)   
 
-# Create a route decorator
 
 #Jinja2 filters
 #upper - all upper case letters
@@ -110,6 +124,7 @@ def update(id):
 #title - capitalizes the first letter of each word in a string
 #trim - removes trailing spaces
 
+# Create a route decorator
 @app.route('/user/add', methods=['GET','POST'])
 def add_user():
    name = None
