@@ -9,7 +9,6 @@ import os
 
 
 # Create a Flask instance
-
 app = Flask(__name__)
 
 # Add User Database (SQLite)
@@ -40,7 +39,28 @@ class Users(db.Model):
    # Create a String
    def __repr__(self):
       return '<Name %r>' % self.name
-  
+
+# Create a route for deleting a record
+@app.route('/delete/<int:id>')
+def delete(id):
+   user_to_delete = Users.query.get_or_404(id)
+   name = None
+   form = UserForm()
+
+   try:
+      db.session.delete(user_to_delete)
+      db.session.commit()
+      flash("User Deleted Successfully!!")
+      our_users = Users.query.order_by(Users.date_added)
+      return render_template("add_user.html", form=form,
+                          name=name, 
+                          our_users=our_users)
+   except:
+      flash("Whoops! There was problem deleting user. Try again.")
+      return render_template("add_user.html", form=form,
+                          name=name, 
+                          our_users=our_users)
+   
 # Create a Form Class
 class NamerForm(FlaskForm):
    name = StringField("What's Your Name?", validators=[DataRequired()])
@@ -76,7 +96,8 @@ def update(id):
    else:
       return render_template("update.html", 
                                 form=form,
-                                name_to_update=name_to_update)   
+                                name_to_update=name_to_update,
+                                id=id)   
 
 # Create a route decorator
 
