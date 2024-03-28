@@ -72,6 +72,16 @@ def add_post():
 
       #Redirect to the webpage
    return render_template("add_post.html", form = form)
+
+# Add blog post listing page
+
+@app.route('/posts')
+def posts():
+   # Grab all the posts from the database
+   posts = Posts.query.order_by(Posts.date_posted)
+   return render_template ("posts.html",
+                           posts = posts)
+
 # JSON thing
 
 @app.route('/date')
