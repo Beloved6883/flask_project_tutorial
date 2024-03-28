@@ -73,6 +73,11 @@ def add_post():
       #Redirect to the webpage
    return render_template("add_post.html", form = form)
 
+@app.route('/post/<int:id>')
+def post(id):
+   post = Posts.query.get_or_404(id)
+   return render_template('post.html', post = post)
+   
 # Add blog post listing page
 
 @app.route('/posts')
