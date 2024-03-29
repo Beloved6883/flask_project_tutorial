@@ -46,7 +46,7 @@
  <div class="card">
  <div class="card-header">
      Update Profile
-     <form action="/dashboard/{{ name_to_update.id }}" method ="POST">
+     <form action="/update/{{ name_to_update.id }}" method ="POST">
         {{ form.hidden_tag() }}
         {{ form.name.label(class="form-label") }}
         {{ form.name(class="form-control", value=name_to_update.name) }}
@@ -59,6 +59,7 @@
         <br/>
         {{ form.favorite_color.label(class="form-label") }}
         {{ form.favorite_color(class="form-control", value=name_to_update.favorite_color) }}
+        <!--Submit button here does not do anything -->
         {{ form.submit(class="btn btn-secondary btn-sm") }}
     </form>
 </div>
