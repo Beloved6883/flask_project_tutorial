@@ -11,7 +11,7 @@ from datetime import date
 from wtforms.widgets import TextArea
 from flask_login import UserMixin, login_user, LoginManager, login_required, logout_user, current_user
 from webforms import LoginForm, PostForm, PasswordForm, NamerForm, UserForm
-
+from first_flask_app import app
 
 # Create a Flask instance
 app = Flask(__name__)
