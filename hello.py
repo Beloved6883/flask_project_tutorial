@@ -70,7 +70,7 @@ def login():
 @app.route('/logout', methods=["GET", "POST"])
 @login_required
 def logout():
-   logout_user
+   logout_user()
    flash("You have been logged out. Thanks for stopping by!")
    return redirect(url_for('login'))
 
@@ -78,6 +78,7 @@ def logout():
 @app.route('/dashboard', methods =["GET","POST"])
 @login_required
 def dashboard():
+
    return render_template('dashboard.html')
 
 # Create a Blog Post mode
