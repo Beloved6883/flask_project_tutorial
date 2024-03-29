@@ -9,6 +9,7 @@ import os
 from werkzeug.security import generate_password_hash, check_password_hash
 from datetime import date
 from wtforms.widgets import TextArea
+from flask_login import UserMixin, login_user, LoginManager, login_required, logout_user, current_user
 
 
 # Create a Flask instance
@@ -30,6 +31,54 @@ db = SQLAlchemy(app)
 
 # Migrate app with database
 migrate = Migrate(app, db)
+
+# Flask_Login stuff
+login_manager = LoginManager()
+login_manager.init_app(app)
+login_manager.login_view = 'login'
+
+@login_manager.user_loader
+def load_user(user_id):
+   return Users.query.get(int(user_id))
+
+# Create Login Form
+class LoginForm(FlaskForm):
+   username = StringField("Username", validators=[DataRequired()])
+   password = PasswordField("Password", validators=[DataRequired()])
+   submit = SubmitField("Submit")
+
+# Create Login Page
+@app.route('/login', methods =["GET","POST"])
+def login():
+   form = LoginForm()
+   if form.validate_on_submit():
+      user = Users.query.filter_by(username=form.username.data).first()
+      if user:
+         # Check the password hash
+         if check_password_hash(user.password_hash, form.password.data):
+            login_user(user)
+            flash("Login Successful!")
+            return redirect(url_for('dashboard'))
+         else:
+            flash("Wrong password. Try Again.")
+      else:
+         flash("That user does not exist! Try Again.")
+
+   return render_template('login.html', form=form)
+
+# Create logout function
+@app.route('/logout', methods=["GET", "POST"])
+@login_required
+def logout():
+   logout_user
+   flash("You have been logged out. Thanks for stopping by!")
+   return redirect(url_for('login'))
+
+# Create Dashboard Page
+@app.route('/dashboard', methods =["GET","POST"])
+@login_required
+def dashboard():
+   return render_template('dashboard.html')
 
 # Create a Blog Post mode
 class Posts(db.Model):
@@ -143,9 +192,10 @@ def get_current_date():
    # return {"Date": date.today()}
 
 
-#Create a Model
-class Users(db.Model):
+#Create a Datebase Model
+class Users(db.Model, UserMixin):
    id = db.Column(db.Integer, primary_key=True)
+   username = db.Column(db.String(20), nullable = False, unique = True)
    name = db.Column(db.String(200), nullable=False)
    email = db.Column(db.String(120), nullable=False, unique=True)
    date_added = db.Column(db.DateTime, default=datetime.now)
@@ -203,6 +253,7 @@ class PasswordForm(FlaskForm):
 
 class UserForm(FlaskForm):
    name = StringField("Name", validators=[DataRequired()])
+   username = StringField("Username", validators=[DataRequired()])
    email = StringField("Email address", validators=[DataRequired()])
    favorite_color = StringField("Favorite Color")
    password_hash = PasswordField('Password',validators=[DataRequired(), EqualTo('password_hash2', message='Password Must Match!')])
@@ -257,7 +308,7 @@ def add_user():
          # Hash password
          hashed_pw = generate_password_hash(form.password_hash.data, "pbkdf2")
          user = Users(name=form.name.data, email = form.email.data, favorite_color = form.favorite_color.data,
-                      password_hash = hashed_pw)
+                      password_hash = hashed_pw, username = form.username.data)
          db.session.add(user)
          db.session.commit()
       name =form.name.data
@@ -265,6 +316,7 @@ def add_user():
       form.email.data = ""
       form.favorite_color.data = ""
       form.password_hash.data = ""
+      form.username.data = ""
       flash("User Added Sucessfully!")
    our_users = Users.query.order_by(Users.date_added)
    return render_template("add_user.html", form=form,
