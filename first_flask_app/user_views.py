@@ -4,7 +4,7 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from webforms import UserForm
 from db_config import db
 from datetime import datetime
-from flask_login import UserMixin
+from flask_login import UserMixin, login_required
 from db_classes import Users
 
 # Create a route for deleting a record
@@ -31,6 +31,7 @@ def delete(id):
 
 # Update Database record
 @app.route('/update/<int:id>', methods=['GET','POST'])
+@login_required
 def update(id):
    form = UserForm()
    name_to_update = Users.query.get_or_404(id)
