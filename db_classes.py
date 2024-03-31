@@ -3,6 +3,8 @@ from datetime import datetime
 from flask_login import UserMixin
 from werkzeug.security import generate_password_hash, check_password_hash
 from db_config import db
+from flask_sqlalchemy import SQLAlchemy
+from flask_migrate import Migrate
 
 
 # Create a Blog Post mode
@@ -10,12 +12,13 @@ class Posts(db.Model):
    blog_id = db.Column(db.Integer, primary_key = True)
    title = db.Column(db.String(255))
    content = db.Column(db.Text)
-   author = db.Column(db.String(255))
+   # author = db.Column(db.String(255))
    date_posted = db.Column(db.DateTime, default=datetime.now)
    slug = db.Column(db.String(255)) 
+# Create a Foreign Key to link user (refer to the primary key of the user)
+   poster_id = db.Column(db.Integer, db.ForeignKey('users.id'))
 
-
-   #Create a Datebase Model
+# Create a Datebase Model
 class Users(db.Model, UserMixin):
    id = db.Column(db.Integer, primary_key=True)
    username = db.Column(db.String(20), nullable = False, unique = True)
@@ -26,6 +29,9 @@ class Users(db.Model, UserMixin):
 
    # Do some password stuff
    password_hash = db.Column(db.String(128))
+
+   # Users can have many posts (one-to-many relationship)
+   posts = db.relationship('Posts',backref = 'poster')
 
    @property
    def password(self):

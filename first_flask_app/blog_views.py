@@ -1,6 +1,6 @@
 from first_flask_app import app
 from flask import render_template, flash, redirect, url_for
-from flask_login import login_required
+from flask_login import login_required, current_user
 from webforms import PostForm
 from db_classes import Posts
 from db_config import db
@@ -12,14 +12,15 @@ def add_post():
    form = PostForm()
 
    if form.validate_on_submit():
+      poster = current_user.id
       post = Posts(title = form.title.data,
                    content = form.content.data,
-                   author = form.author.data,
+                  poster_id = poster,
                    slug = form.slug.data)
       # Clear the form
       form.title.data = ""
       form.content.data = ""
-      form.author.data = ""
+      # form.author.data = ""
       form.slug.data = ""
    # Add post data to databased
       db.session.add(post)
@@ -43,7 +44,7 @@ def edit_post(id):
    form = PostForm()
    if form.validate_on_submit():
       post.title = form.title.data
-      post.author = form.author.data
+      # post.author = form.author.data
       post.slug = form.slug.data
       post.content = form.content.data
 
@@ -55,7 +56,7 @@ def edit_post(id):
 
 # Pass in form information
    form.title.data = post.title
-   form.author.data = post.author
+   # form.author.data = post.author
    form.slug.data = post.slug
    form.content.data = post.content
    return render_template('edit_post.html', form=form)
