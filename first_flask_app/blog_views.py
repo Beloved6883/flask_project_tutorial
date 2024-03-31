@@ -64,26 +64,34 @@ def edit_post(id):
 
 # Delete blog post
 @app.route('/posts/delete/<int:id>')
+@login_required
 def delete_post(id):
    post_to_delete = Posts.query.get_or_404(id)
+   id = current_user.id
+   if id == post_to_delete.poster.id:
+      try:
+         db.session.delete(post_to_delete)
+         db.session.commit()
 
-   try:
-      db.session.delete(post_to_delete)
-      db.session.commit()
+         # Return a message
+         flash("Blog Post Was Deleted!")
 
-      # Return a message
-      flash("Blog Post Was Deleted!")
+         posts = Posts.query.order_by(Posts.date_posted)
+         return render_template ("posts.html",
+                              posts = posts)
 
+      except:
+         flash("Whoops! There was a problem deleting post. Try again.")
+         posts = Posts.query.order_by(Posts.date_posted)
+         return render_template ("posts.html",
+                              posts = posts)
+   
+   else: 
+      flash("You are not authorized to delete that post.")
       posts = Posts.query.order_by(Posts.date_posted)
       return render_template ("posts.html",
-                           posts = posts)
-
-   except:
-      flash("Whoops! There was a problem deleting post. Try again.")
-      posts = Posts.query.order_by(Posts.date_posted)
-      return render_template ("posts.html",
-                           posts = posts)
-
+                              posts = posts)
+   
 @app.route('/posts')
 def posts():
    # Grab all the posts from the database
