@@ -20,8 +20,9 @@
     {{ post.date_posted }}</small><br/><br/>
     {{ post.content }}<br/><br/>
 </div>
-<a href=" {{ url_for('edit_post', id=post.blog_id) }}" class="btn btn-outline-secondary btn-sm">Edit Post</a><br/>
 <a href=" {{ url_for('posts') }}" class="btn btn-outline-secondary btn-sm">Back to Blog</a><br/>
+{% if post.poster_id == current_user.id %}
+<a href=" {{ url_for('edit_post', id=post.blog_id) }}" class="btn btn-outline-secondary btn-sm">Edit Post</a><br/>
 <a href=" {{ url_for('delete_post',id=post.blog_id) }}" class="btn btn-outline-danger btn-sm">Delete Post</a><br/>
-
+{% endif %}
 {% endblock %}
