@@ -5,6 +5,7 @@ from webforms import PostForm
 from db_classes import Posts
 from db_config import db
 
+
 # Add Post Page
 @app.route('/add-post', methods=["GET","POST"])
 # @login_required
