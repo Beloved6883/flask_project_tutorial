@@ -1,9 +1,10 @@
 from first_flask_app import app
-from flask import render_template, flash
+from flask import render_template, flash, redirect, url_for
 from werkzeug.security import check_password_hash
 from webforms import PasswordForm, NamerForm, SearchForm
 from db_classes import Users, Posts
 from .blog_views import post
+from flask_login import login_required, current_user
 
 @app.route('/')
 def index():
@@ -14,6 +15,16 @@ def index():
     return render_template("index.html", first_name = first_name, 
                            stuff=stuff, 
                            favorite_pizza=favorite_pizza)
+
+@app.route('/admin')
+@login_required
+def admin():
+   id = current_user.id
+   if id == 19:
+      return render_template("admin.html")
+   else:
+      flash("You must be the admin to access this page.")
+      return redirect(url_for('dashboard'))
 
 # localhost:5000/user/Natasha
 @app.route('/user/<name>')
