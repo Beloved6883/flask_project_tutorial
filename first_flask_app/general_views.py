@@ -1,8 +1,9 @@
 from first_flask_app import app
 from flask import render_template, flash
 from werkzeug.security import check_password_hash
-from webforms import PasswordForm, NamerForm
-from db_classes import Users
+from webforms import PasswordForm, NamerForm, SearchForm
+from db_classes import Users, Posts
+from .blog_views import post
 
 @app.route('/')
 def index():
@@ -84,3 +85,25 @@ def name():
    return render_template("name.html", 
                           name = name, 
                           form = form)
+
+# Pass stuff to the navbar
+@app.context_processor
+def base():
+   form = SearchForm()
+   return dict(form = form)
+
+# Create search function
+@app.route('/search', methods=["POST"])
+def search():
+   form = SearchForm()
+   posts = Posts.query
+   if form.validate_on_submit():
+      # Get data from submitted form
+      post.searched = form.searched.data
+
+      # Query the database
+      posts = posts.filter(Posts.content.like('%' + post.searched + '%'))
+      posts = posts.order_by(Posts.title).all()
+      return render_template('search.html',
+                             form=form,
+                             searched = post.searched, posts=posts)
