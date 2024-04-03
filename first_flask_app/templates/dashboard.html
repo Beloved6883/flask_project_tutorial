@@ -20,8 +20,12 @@
             {{ current_user.name }}
         </div>
         <div class="card-body">
-          <h5 class="card-title">Welcome to Your User Dashboard!</h5>
           <p class="card-text">
+
+<div class="container">
+    <div class="row">
+        <div class="col-8">
+
             <strong>Name:</strong>
             {{ current_user.name }}<br/>
             <strong>Username:</strong>
@@ -40,7 +44,12 @@
           <a href="{{ url_for('logout') }}" class="btn btn-secondary btn-sm">Logout</a>
           <a href="{{ url_for('update', id=current_user.id )}}" class="btn btn-secondary btn-sm">Update Profile</a>
           <a href="{{ url_for('delete', id=current_user.id )}}" class="btn btn-danger btn-sm">Delete</a>
+          <br/><br/>
         </div>
+        <div class="col-4"><img src="{{ url_for('static', filename='images/default profile picture - flask project.png')}}" width="150" align="right"></div>
+        </div>
+    </div>
+</div>
       </div>
       <br/>
  <div class="card">
