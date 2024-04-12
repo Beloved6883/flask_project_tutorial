@@ -36,10 +36,11 @@
             {{ current_user.email }}<br/>
             <strong>Favorite Color:</strong>
             {{ current_user.favorite_color }}<br/>
+            <strong>About Author:</strong>
+            {{ current_user.about_author }}<br/>
             <strong>Date Joined:</strong>
             {{ current_user.date_added }}<br/>
-
-
+            
           </p>
           <a href="{{ url_for('logout') }}" class="btn btn-secondary btn-sm">Logout</a>
           <a href="{{ url_for('update', id=current_user.id )}}" class="btn btn-secondary btn-sm">Update Profile</a>
@@ -68,7 +69,9 @@
         <br/>
         {{ form.favorite_color.label(class="form-label") }}
         {{ form.favorite_color(class="form-control", value=name_to_update.favorite_color) }}
-        <!--Submit button here does not do anything -->
+        <br/>
+        
+        <textarea name="about_author" class=" form-control">{{name_to_update.about_author}}</textarea>
         {{ form.submit(class="btn btn-secondary btn-sm") }}
     </form>
 </div>

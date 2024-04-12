@@ -19,6 +19,12 @@
    <small>{{ post.poster.name }}<br/>
     {{ post.date_posted }}</small><br/><br/>
     {{ post.content | safe }}<br/><br/>
+
+    {% if post.poster.about_author %}
+        {{ post.poster.about_author }}
+    {% endif %}
+    <br/><br/>
+    
 </div>
 <a href=" {{ url_for('posts') }}" class="btn btn-outline-secondary btn-sm">Back to Blog</a><br/>
 {% if post.poster_id == current_user.id %}

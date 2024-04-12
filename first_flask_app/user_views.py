@@ -40,6 +40,7 @@ def update(id):
       name_to_update.email = request.form['email']
       name_to_update.favorite_color = request.form['favorite_color']
       name_to_update.username = request.form['username']
+      name_to_update.about_author = request.form['about_author']
       try:
          db.session.commit()
          flash("User Updated Successfully!")
