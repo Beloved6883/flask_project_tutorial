@@ -40,7 +40,8 @@
             {{ current_user.about_author }}<br/>
             <strong>Date Joined:</strong>
             {{ current_user.date_added }}<br/>
-            
+            <strong>Profile Pic:</strong>
+            {{ current_user.profile_pic }}<br/>
           </p>
           <a href="{{ url_for('logout') }}" class="btn btn-secondary btn-sm">Logout</a>
           <a href="{{ url_for('update', id=current_user.id )}}" class="btn btn-secondary btn-sm">Update Profile</a>
@@ -56,7 +57,8 @@
  <div class="card">
  <div class="card-header">
      Update Profile
-     <form action="/update/{{ name_to_update.id }}" method ="POST">
+     <form action="/dashboard" method ="POST"
+     enctype="multipart/form-data">
         {{ form.hidden_tag() }}
         {{ form.name.label(class="form-label") }}
         {{ form.name(class="form-control", value=name_to_update.name) }}
@@ -73,6 +75,10 @@
         
         <textarea name="about_author" class=" form-control">{{name_to_update.about_author}}</textarea>
         {{ form.submit(class="btn btn-secondary btn-sm") }}
+        <br/>
+        {{ form.profile_pic.label(class="form-label") }}
+        {{ form.profile_pic(class="form-control", value=name_to_update.profile_pic) }}
+        <br/>
     </form>
 </div>
 <div class="card-body">

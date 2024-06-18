@@ -27,6 +27,7 @@ class Users(db.Model, UserMixin):
    date_added = db.Column(db.DateTime, default=datetime.now)
    favorite_color = db.Column(db.String(120))
    about_author = db.Column(db.Text(500), nullable=True)
+   profile_pic = db.Column(db.String(2000), nullable=True)
 
    # Do some password stuff
    password_hash = db.Column(db.String(128))

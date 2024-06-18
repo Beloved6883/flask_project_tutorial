@@ -10,6 +10,9 @@ app.config['SQLALCHEMY_DATABASE_URI'] = f'mysql+pymysql://root:{db_password}@loc
 # Create CRSF token
 app.config['SECRET_KEY'] = "my super secret key"
 
+UPLOAD_FOLDER = 'first_flask_app/static/images/'
+app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+
 #Initialize the Database
 app.app_context().push()
 db = SQLAlchemy(app) 

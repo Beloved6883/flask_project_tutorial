@@ -4,6 +4,9 @@ from flask_login import login_required, current_user
 from webforms import UserForm
 from db_classes import Users
 from db_config import db
+from werkzeug.utils import secure_filename
+import uuid as uuid
+import os
 
 # Create Dashboard Page
 @app.route('/dashboard', methods =["GET","POST"])
@@ -18,6 +21,15 @@ def dashboard():
       name_to_update.favorite_color = request.form['favorite_color']
       name_to_update.username = request.form['username']
       name_to_update.about_author = request.form['about_author']
+      name_to_update.profile_pic = request.files['profile_pic']
+      # Grab image name
+      pic_filename = secure_filename(name_to_update.profile_pic.filename)
+      # Set UUID
+      pic_name = str(uuid.uuid1()) + "_" + pic_filename
+       # Save image
+      name_to_update.profile_pic.save(os.path.join(app.config['UPLOAD_FOLDER'], pic_filename))
+      name_to_update.profile_pic = pic_name
+
       try:
          db.session.commit()
          flash("User Updated Successfully!")
